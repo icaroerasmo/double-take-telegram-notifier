@@ -7,6 +7,7 @@ import com.icaroerasmo.listeners.MatchListener;
 import com.icaroerasmo.properties.ListenersProperties;
 import com.icaroerasmo.properties.MqttProperties;
 import com.icaroerasmo.properties.TelegramProperties;
+import com.icaroerasmo.utils.MqttUtil;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +33,9 @@ import java.util.function.BiConsumer;
 @RequiredArgsConstructor
 public class Beans {
 
-    private static final String PARAMETER_WILDCARD_PATTERN = "\\{\\{\\s*%s\\s*\\}\\}";
-    private static final String DEFAULT_MESSAGE = "{{camName}}: {{personName}} detected";
-
-    private final ApplicationContext applicationContext;
+    private final MqttUtil mqttUtil;
     private final MqttProperties mqttProperties;
+    private final ApplicationContext applicationContext;
     private final TelegramProperties telegramProperties;
     private final ListenersProperties listenersProperties;
 
@@ -107,7 +106,7 @@ public class Beans {
         bd.getConstructorArgumentValues()
                 .addGenericArgumentValue(personName);
         bd.getConstructorArgumentValues().
-                addGenericArgumentValue(matchesCallback());
+                addGenericArgumentValue(mqttUtil.matchesCallback(bot()));
         registry.registerBeanDefinition(personName, bd);
     }
 
@@ -123,83 +122,7 @@ public class Beans {
         bd.getConstructorArgumentValues()
                 .addGenericArgumentValue(beanName);
         bd.getConstructorArgumentValues().
-                addGenericArgumentValue(camCallback());
+                addGenericArgumentValue(mqttUtil.camCallback(bot()));
         registry.registerBeanDefinition(beanName, bd);
-    }
-
-    private BiConsumer<String, Map<String, Object>> matchesCallback() {
-        return (camName, detectionData) -> {
-            for(String name : detectionData.keySet()) {
-                String base64Image = (String) detectionData.get(name);
-                byte[] image = Base64.getDecoder().decode(base64Image);
-                SendPhoto request = new SendPhoto(telegramProperties.getChatId(), image);
-
-                Map<String, String> parameters = new HashMap<>();
-                parameters.put("camName", camName);
-                parameters.put("personName", name);
-
-                final String mainMessage = resolveMessage(QueueType.MATCHES, parameters);
-
-                log.warn("{}. Image: {}", mainMessage, base64Image);
-
-                request.caption(mainMessage);
-                bot().execute(request);
-            }
-        };
-    }
-
-    private  BiConsumer<String, Map<String, Object>> camCallback() {
-        return (camName, detectionData) -> {
-            for(String name : detectionData.keySet()) {
-
-                String base64Image = (String) detectionData.get(name);
-                byte[] image = Base64.getDecoder().decode(base64Image);
-                SendPhoto request = new SendPhoto(telegramProperties.getChatId(), image);
-
-                Map<String, String> parameters = new HashMap<>();
-                parameters.put("camName", camName);
-                parameters.put("personName", name);
-
-                final String mainMessage = resolveMessage(QueueType.CAMERAS, parameters);
-
-                log.info("{}. Image: {}", mainMessage, base64Image);
-
-                request.caption(mainMessage);
-                bot().execute(request);
-            }
-        };
-    }
-
-    private String resolveMessage(QueueType type, Map<String, String> parameters) {
-
-        String messageTemplate = null;
-
-        final String personName = parameters.get("personName");
-
-        ListenersProperties.QueueTypeProperties properties = null;
-
-        switch (type) {
-            case CAMERAS -> properties = listenersProperties.getCameras();
-            case MATCHES -> properties = listenersProperties.getMatches();
-        }
-
-        Optional<ListenersProperties.QueueProperties> queue =
-                properties.getQueues().stream().
-                filter(q -> personName.equals(q.getName()))
-                .findFirst();
-
-        if(queue.isPresent() && queue.get().getMessage() != null) {
-            messageTemplate = queue.get().getMessage();
-        } else {
-            messageTemplate = DEFAULT_MESSAGE;
-        }
-
-        for(String parameter : parameters.keySet()) {
-            messageTemplate = messageTemplate.
-                    replaceAll(PARAMETER_WILDCARD_PATTERN.
-                            formatted(parameter), parameters.get(parameter));
-        }
-
-        return messageTemplate;
     }
 }

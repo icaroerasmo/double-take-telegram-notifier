@@ -1,17 +1,14 @@
 package com.icaroerasmo.listeners;
 
 import com.google.gson.Gson;
-import com.pengrad.telegrambot.request.SendPhoto;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class CamListener extends AbstractListener {
 

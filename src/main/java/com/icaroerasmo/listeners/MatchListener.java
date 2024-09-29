@@ -1,7 +1,6 @@
 package com.icaroerasmo.listeners;
 
 import com.google.gson.Gson;
-import com.pengrad.telegrambot.request.SendPhoto;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 
