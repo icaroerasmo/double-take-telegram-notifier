@@ -1,15 +1,11 @@
 package com.icaroerasmo.config;
 
-import com.icaroerasmo.enums.QueueType;
 import com.icaroerasmo.listeners.AbstractListener;
 import com.icaroerasmo.listeners.CamListener;
 import com.icaroerasmo.listeners.MatchListener;
 import com.icaroerasmo.properties.ListenersProperties;
 import com.icaroerasmo.properties.MqttProperties;
-import com.icaroerasmo.properties.TelegramProperties;
 import com.icaroerasmo.utils.MqttUtil;
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
@@ -25,24 +21,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.List;
 
 @Log4j2
 @Configuration
 @RequiredArgsConstructor
-public class Beans {
+public class MqttConfig {
 
     private final MqttUtil mqttUtil;
     private final MqttProperties mqttProperties;
     private final ApplicationContext applicationContext;
-    private final TelegramProperties telegramProperties;
     private final ListenersProperties listenersProperties;
-
-    @Bean
-    public TelegramBot bot() {
-        return new TelegramBot(telegramProperties.getBotToken());
-    }
 
     @Bean
     public IMqttClient mqttClient() throws MqttException {
@@ -106,7 +95,7 @@ public class Beans {
         bd.getConstructorArgumentValues()
                 .addGenericArgumentValue(personName);
         bd.getConstructorArgumentValues().
-                addGenericArgumentValue(mqttUtil.matchesCallback(bot()));
+                addGenericArgumentValue(mqttUtil.matchesCallback());
         registry.registerBeanDefinition(personName, bd);
     }
 
@@ -122,7 +111,7 @@ public class Beans {
         bd.getConstructorArgumentValues()
                 .addGenericArgumentValue(beanName);
         bd.getConstructorArgumentValues().
-                addGenericArgumentValue(mqttUtil.camCallback(bot()));
+                addGenericArgumentValue(mqttUtil.camCallback());
         registry.registerBeanDefinition(beanName, bd);
     }
 }

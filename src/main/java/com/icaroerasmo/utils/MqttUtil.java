@@ -23,10 +23,11 @@ public class MqttUtil {
     private static final String PARAMETER_WILDCARD_PATTERN = "\\{\\{\\s*%s\\s*\\}\\}";
     private static final String DEFAULT_MESSAGE = "{{camName}}: {{personName}} detected";
 
+    private final TelegramBot telegramBot;
     private final TelegramProperties telegramProperties;
     private final ListenersProperties listenersProperties;
 
-    public BiConsumer<String, Map<String, Object>> matchesCallback(TelegramBot bot) {
+    public BiConsumer<String, Map<String, Object>> matchesCallback() {
         return (camName, detectionData) -> {
             for(String name : detectionData.keySet()) {
                 String base64Image = (String) detectionData.get(name);
@@ -42,12 +43,12 @@ public class MqttUtil {
                 log.warn("{}. Image: {}", mainMessage, base64Image);
 
                 request.caption(mainMessage);
-                bot.execute(request);
+                telegramBot.execute(request);
             }
         };
     }
 
-    public  BiConsumer<String, Map<String, Object>> camCallback(TelegramBot bot) {
+    public  BiConsumer<String, Map<String, Object>> camCallback() {
         return (camName, detectionData) -> {
             for(String name : detectionData.keySet()) {
 
@@ -64,7 +65,7 @@ public class MqttUtil {
                 log.info("{}. Image: {}", mainMessage, base64Image);
 
                 request.caption(mainMessage);
-                bot.execute(request);
+                telegramBot.execute(request);
             }
         };
     }
