@@ -1,0 +1,26 @@
+mqtt:
+  host: localhost
+  port: 1883
+  protocol: tcp
+  username: mqtt_user
+  password: password
+  automatic_reconnect: true
+  connection_timeout: 10
+
+telegram:
+  chat_id: "-1000000000000"
+  bot_token: "0000000000:AAAbO1-dysu3daUTpjVEXX4Pwq-M9wrPT3"
+
+listeners:
+  matches:
+    queues:
+      - name: unknown
+        message: "{{camName}}: Stranger detected"
+  cameras:
+    queues:
+      - name: back-door
+        message: "{{camName}}: {{personName}} identified."
+      - name: front-door
+        message: "{{camName}}: {{personName}} identified."
+      - name: hallway
+        message: "{{camName}}: {{personName}} identified."

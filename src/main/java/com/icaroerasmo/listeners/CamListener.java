@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class CamListener extends AbstractListener {
@@ -27,8 +28,18 @@ public class CamListener extends AbstractListener {
 
         for(Map<String, Object> match : matches) {
 
-            final String name = (String) match.get("name");
+            String name = (String) match.get("name");
             final String base64Image = (String) match.get("base64");
+
+            Optional<String> key = detected.keySet().stream().
+                    filter(person -> detected.get(person).
+                            equals(base64Image)).findFirst();
+
+            if(key.isPresent()) {
+                final String oldName = key.get();
+                detected.remove(oldName);
+                name = name+", "+oldName;
+            }
 
             detected.put(name, base64Image);
         }

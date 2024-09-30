@@ -73,18 +73,26 @@ public class MqttUtil {
 
         String messageTemplate = null;
 
-        final String personName = parameters.get("personName");
+        String queueName = null;
 
         ListenersProperties.QueueTypeProperties properties = null;
 
         switch (type) {
-            case CAMERAS -> properties = listenersProperties.getCameras();
-            case MATCHES -> properties = listenersProperties.getMatches();
+            case CAMERAS -> {
+                queueName = parameters.get("camName");
+                properties = listenersProperties.getCameras();
+            }
+            case MATCHES -> {
+                queueName = parameters.get("personName");
+                properties = listenersProperties.getMatches();
+            }
         }
+
+        final String finalQueueName = queueName;
 
         Optional<ListenersProperties.QueueProperties> queue =
                 properties.getQueues().stream().
-                        filter(q -> personName.equals(q.getName()))
+                        filter(q -> finalQueueName.equals(q.getName()))
                         .findFirst();
 
         if(queue.isPresent() && queue.get().getMessage() != null) {
