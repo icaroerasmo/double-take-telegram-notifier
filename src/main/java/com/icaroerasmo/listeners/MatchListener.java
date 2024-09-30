@@ -1,6 +1,7 @@
 package com.icaroerasmo.listeners;
 
 import com.google.gson.Gson;
+import com.icaroerasmo.enums.QueueType;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class MatchListener extends AbstractListener {
-    private String name;
+
     private IMqttMessageListener listener = (topic, msg) -> {
         byte[] payload = msg.getPayload();
         Map<String, Object> data = new Gson().fromJson(new String(payload, StandardCharsets.UTF_8), Map.class);
@@ -19,7 +20,7 @@ public class MatchListener extends AbstractListener {
         String base64Image = (String) ((Map)data.get("unknown")).get("base64");
 
         Map<String, Object> detected = new HashMap<>();
-        detected.put(name, base64Image);
+        detected.put(getName(), base64Image);
 
         var callback = getCallback();
 
@@ -28,9 +29,8 @@ public class MatchListener extends AbstractListener {
         }
     };
 
-    public MatchListener(IMqttClient client, String name, BiConsumer<String, Map<String, Object>> callback) {
-        super(client, "double-take/matches/%s".formatted(name), callback);
-        this.name = name;
+    public MatchListener(IMqttClient client, QueueType queueType, String name, BiConsumer<String, Map<String, Object>> callback) {
+        super(client, queueType, name, callback);
     }
 
     @Override

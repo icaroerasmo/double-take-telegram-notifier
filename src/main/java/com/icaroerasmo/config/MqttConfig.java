@@ -1,5 +1,6 @@
 package com.icaroerasmo.config;
 
+import com.icaroerasmo.enums.QueueType;
 import com.icaroerasmo.listeners.AbstractListener;
 import com.icaroerasmo.listeners.CamListener;
 import com.icaroerasmo.listeners.MatchListener;
@@ -92,6 +93,8 @@ public class MqttConfig {
         BeanDefinition bd = new RootBeanDefinition(MatchListener.class);
         bd.getConstructorArgumentValues().
                 addGenericArgumentValue(mqttClient());
+        bd.getConstructorArgumentValues().
+                addGenericArgumentValue(QueueType.MATCHES);
         bd.getConstructorArgumentValues()
                 .addGenericArgumentValue(personName);
         bd.getConstructorArgumentValues().
@@ -108,6 +111,8 @@ public class MqttConfig {
         BeanDefinition bd = new RootBeanDefinition(CamListener.class);
         bd.getConstructorArgumentValues().
                 addGenericArgumentValue(mqttClient());
+        bd.getConstructorArgumentValues().
+                addGenericArgumentValue(QueueType.CAMERAS);
         bd.getConstructorArgumentValues()
                 .addGenericArgumentValue(beanName);
         bd.getConstructorArgumentValues().

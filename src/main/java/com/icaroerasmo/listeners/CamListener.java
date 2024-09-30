@@ -1,6 +1,7 @@
 package com.icaroerasmo.listeners;
 
 import com.google.gson.Gson;
+import com.icaroerasmo.enums.QueueType;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 
@@ -12,8 +13,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class CamListener extends AbstractListener {
-
-    private String camName;
 
     private IMqttMessageListener listener = (topic, msg) -> {
 
@@ -47,13 +46,12 @@ public class CamListener extends AbstractListener {
         var callback = getCallback();
 
         if(callback != null) {
-            callback.accept(camName, detected);
+            callback.accept(getName(), detected);
         }
     };
 
-    public CamListener(IMqttClient client, String camName, BiConsumer<String, Map<String, Object>> callback) {
-        super(client, "double-take/cameras/%s".formatted(camName), callback);
-        this.camName = camName;
+    public CamListener(IMqttClient client, QueueType queueType, String name, BiConsumer<String, Map<String, Object>> callback) {
+        super(client, queueType, name, callback);
     }
 
     @Override
