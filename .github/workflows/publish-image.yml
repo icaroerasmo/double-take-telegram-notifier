@@ -54,7 +54,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ github.repository_owner }}/double-take-telegram-notifier:${{ steps.tagName.outputs.TAG_NAME }}
+          tags: ${{ steps.tagName.outputs.TAG_NAME }}:${{ github.repository_owner }}/double-take-telegram-notifier
           labels: ${{ steps.meta.outputs.labels }}
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
