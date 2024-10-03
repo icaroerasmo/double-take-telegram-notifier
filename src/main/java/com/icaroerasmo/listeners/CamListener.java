@@ -1,6 +1,7 @@
 package com.icaroerasmo.listeners;
 
 import com.google.gson.Gson;
+import com.icaroerasmo.enums.MatchTypeEnum;
 import com.icaroerasmo.enums.QueueType;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -26,6 +27,13 @@ public class CamListener extends AbstractListener {
         Map<String, Object> detected = new HashMap<>();
 
         for(Map<String, Object> match : matches) {
+
+            String type = (String) match.get("type");
+
+            if(MatchTypeEnum.SNAPSHOT.equals(
+                    MatchTypeEnum.valueOf(type.toUpperCase()))) {
+                continue;
+            }
 
             String name = (String) match.get("name");
             final String base64Image = (String) match.get("base64");
