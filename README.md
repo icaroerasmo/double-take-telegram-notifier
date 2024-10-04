@@ -47,7 +47,7 @@ version: "3.9"
 services:
   telegram-notifier:
     container_name: telegram-notifier
-    image: ghcr.io/icaroerasmo/double-take-telegram-notifier:release-0.0.1
+    image: ghcr.io/icaroerasmo/double-take-telegram-notifier
     restart: always
     volumes:
       - ./telegram-notifier:/app/config
