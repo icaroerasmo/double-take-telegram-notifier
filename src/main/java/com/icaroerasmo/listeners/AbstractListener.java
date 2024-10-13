@@ -18,6 +18,9 @@ public abstract class AbstractListener {
     private String name;
 
     @Getter
+    private String topic;
+
+    @Getter
     private BiConsumer<String, Map<String, Object>> callback;
 
     public AbstractListener(IMqttClient client, QueueType queueType, String name, BiConsumer<String, Map<String, Object>> callback) {
@@ -31,7 +34,8 @@ public abstract class AbstractListener {
 
     protected void listen(IMqttMessageListener listener) {
         try {
-            this.client.subscribe("double-take/%s/%s".formatted(queueType.name().toLowerCase(), name), listener);
+            this.topic = "double-take/%s/%s".formatted(queueType.name().toLowerCase(), name);
+            this.client.subscribe(topic, listener);
         } catch (MqttException e) {
             throw new RuntimeException(e);
         }
