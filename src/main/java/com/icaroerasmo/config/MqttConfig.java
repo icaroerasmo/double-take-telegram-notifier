@@ -57,15 +57,9 @@ public class MqttConfig {
     }
 
     @Bean
-    @DependsOn({"mqttClient", "registerListeners"})
+    @DependsOn({"registerListeners"})
     public Void listen(IMqttClient mqttClient, List<AbstractListener> listeners) {
-
-        DtTMqttCallBack callBack = new DtTMqttCallBack(mqttClient,
-                listeners.stream().map(AbstractListener::getTopic).toList());
-
-        listeners.forEach(listener -> listener.listen());
-        mqttClient.setCallback(callBack);
-
+        listeners.forEach(AbstractListener::listen);
         return null;
     }
 
