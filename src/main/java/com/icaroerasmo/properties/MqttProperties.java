@@ -3,16 +3,13 @@ package com.icaroerasmo.properties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Data
-@Log4j2
 @Configuration
 @ConfigurationProperties(prefix = "mqtt")
-public class MqttProperties {
+public class MqttProperties implements ConfigYaml {
     // localhost
     private String host = "localhost";
     // 1883
