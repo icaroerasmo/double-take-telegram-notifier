@@ -50,6 +50,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>  <!-- added -->
+                    <layout>ZIP</layout> <!-- to use PropertiesLauncher -->
+                </configuration>
             </plugin>
         </plugins>
     </build>
