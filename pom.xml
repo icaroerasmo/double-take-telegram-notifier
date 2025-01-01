@@ -14,7 +14,7 @@
     <groupId>com.icaroerasmo</groupId>
     <artifactId>double-take-telegram-notifier</artifactId>
     <description>Sends notifications to Telegram chats.</description>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.24</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
