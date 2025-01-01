@@ -58,7 +58,7 @@ public class MqttConfig {
 
     @Bean
     @DependsOn({"registerListeners"})
-    public Void listen(IMqttClient mqttClient, List<AbstractListener> listeners) {
+    public Void listen(List<AbstractListener> listeners) {
         listeners.forEach(AbstractListener::listen);
         return null;
     }
