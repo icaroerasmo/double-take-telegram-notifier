@@ -1,0 +1,17 @@
+name: Block release tags from non-main branches
+
+on:
+  create:
+    tags:
+      - 'release/*'
+
+jobs:
+  block-release-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if tag is created from main branch
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "main" ]; then
+            echo "Tags with release/ prefix can only be created from the main branch."
+            exit 1
+          fi
