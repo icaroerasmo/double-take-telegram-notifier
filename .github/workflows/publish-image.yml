@@ -45,9 +45,10 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      - name: Checkout to Main
-        id: main-checkout
-        run: git checkout main
+      - name: Checkout to main
+        uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Bump version
         id: bump
         uses: mickem/gh-action-bump-maven-version@v1
