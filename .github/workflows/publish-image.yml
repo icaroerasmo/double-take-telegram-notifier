@@ -47,7 +47,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Bump version
         id: bump
-        uses: mickem/gh-action-bump-maven-version
+        uses: mickem/gh-action-bump-maven-version@v1
         with:
           bump-command: mvn versions:set -DnewVersion=${{ steps.packageVersion.outputs.TAG_NAME }} -DprocessAllModules
       # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
