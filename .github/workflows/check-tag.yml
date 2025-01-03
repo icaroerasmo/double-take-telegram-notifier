@@ -14,7 +14,7 @@ jobs:
           if [ "${GITHUB_REF_NAME}" != "main" ]; then
             echo "Tags with release/ prefix can only be created from the main branch."
             echo "Current branch: ${GITHUB_REF_NAME}"
-            echo "Created tag: ${GITHUB_REF#refs/tags/}'
+            echo "Created tag: ${GITHUB_REF#refs/tags/}"
             exit 1
           fi
       - name: Extract tag name
