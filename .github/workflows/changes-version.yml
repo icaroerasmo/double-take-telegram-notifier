@@ -27,4 +27,4 @@ jobs:
         uses: mickem/gh-action-bump-maven-version@v1
         with:
           bump-command: mvn versions:set -DnewVersion=${{ steps.extractTag.outputs.TAG_NAME }} -DprocessAllModules
-          commit-message: 'CI: Version bump to ${{ steps.extractTag.outputs.TAG_NAME }}'
+          commit-message: 'Version bump to ${{ steps.extractTag.outputs.TAG_NAME }}' from

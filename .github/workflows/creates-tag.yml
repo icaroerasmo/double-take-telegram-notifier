@@ -15,7 +15,8 @@ jobs:
           fetch-depth: '0'
       - name: Extract tag name
         id: extractTag
-        run: echo "TAG_NAME=$(xmllint --xpath "/*[name()='project']/*[name()='version']/text()" pom.xml)" >> $GITHUB_OUTPUT
+        run: |
+          echo "TAG_NAME=$(xmllint --xpath "/*[name()='project']/*[name()='version']/text()" pom.xml)" >> $GITHUB_OUTPUT
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
         env:
