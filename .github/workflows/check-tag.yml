@@ -19,7 +19,7 @@ jobs:
 #          fi
       - name: Extract tag name
         id: extractTag
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: echo "TAG_NAME=$(basename $GITHUB_REF_NAME)" >> $GITHUB_OUTPUT
       - name: Checkout to main
         uses: actions/checkout@v4
         with:
