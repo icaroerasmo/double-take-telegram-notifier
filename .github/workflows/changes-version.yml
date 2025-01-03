@@ -2,7 +2,7 @@ name: Block release tags from non-main branches
 
 on:
   create:
-    tags:
+    branches :
       - 'release/*'
 
 jobs:
@@ -15,23 +15,14 @@ jobs:
       attestations: write
       id-token: write
     steps:
-#      - name: Check if tag is created from main branch
-#        run: |
-#          if [ "${GITHUB_REF_NAME}" != "main" ]; then
-#            echo "Tags with release/ prefix can only be created from the main branch."
-#            echo "Current branch: ${GITHUB_REF_NAME}"
-#            echo "Created tag: ${GITHUB_REF#refs/tags/}"
-#            exit 1
-#          fi
       - name: Extract tag name
         id: extractTag
         run: echo "TAG_NAME=$(basename $GITHUB_REF_NAME)" >> $GITHUB_OUTPUT
       - name: Checkout to main
         uses: actions/checkout@v4
-        with:
-          ref: main
       - name: Bump version
         id: bump
         uses: mickem/gh-action-bump-maven-version@v1
         with:
           bump-command: mvn versions:set -DnewVersion=${{ steps.extractTag.outputs.TAG_NAME }} -DprocessAllModules
+          commit-message: 'CI: Version bump to ${{ steps.extractTag.outputs.TAG_NAME }}'
