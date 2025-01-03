@@ -1,7 +1,7 @@
 name: Changes version on release branches
 
 on:
-  push:
+  create:
     branches :
       - 'release/*'
 
