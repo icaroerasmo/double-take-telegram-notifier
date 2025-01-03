@@ -20,6 +20,10 @@ jobs:
       - name: Extract tag name
         id: extractTag
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Checkout to main
+        uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Bump version
         id: bump
         uses: mickem/gh-action-bump-maven-version@v1
