@@ -15,3 +15,11 @@ jobs:
             echo "Tags with release/ prefix can only be created from the main branch."
             exit 1
           fi
+      - name: Extract tag name
+        id: extractTag
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Bump version
+        id: bump
+        uses: mickem/gh-action-bump-maven-version@v1
+        with:
+          bump-command: mvn versions:set -DnewVersion=${{ steps.extractTag.outputs.TAG_NAME }} -DprocessAllModules
