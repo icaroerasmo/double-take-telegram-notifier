@@ -33,4 +33,5 @@ jobs:
       - name: Commit version change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-            commit_message: 'CI: Version bump to ${{ steps.extractTag.outputs.TAG_NAME }}'
+          file_pattern: 'pom.xml'
+          commit_message: 'CI: Version bump to ${{ steps.extractTag.outputs.TAG_NAME }}'
