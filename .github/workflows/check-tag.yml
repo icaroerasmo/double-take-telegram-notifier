@@ -8,6 +8,12 @@ on:
 jobs:
   block-release-tags:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      packages: write
+      attestations: write
+      id-token: write
     steps:
 #      - name: Check if tag is created from main branch
 #        run: |
