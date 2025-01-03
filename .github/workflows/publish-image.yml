@@ -4,8 +4,8 @@ name: Create and publish a Docker image
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   push:
-    tags:
-      - 'release/*'
+    branches:
+      - 'main'
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
@@ -27,12 +27,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Gets package name
-        id: packageVersion
-        run: |
-          echo $(basename $GITHUB_REF_NAME)
-          echo "TAG_NAME=$(basename $GITHUB_REF_NAME)" >> $GITHUB_OUTPUT
-        shell: bash
+      - name: Extract version from pom.xml file
+        id: extractVersion
+        uses: dostonhamrakulov/maven-artifact-version-extractor@v1.0
+        with:
+          file_path: ${{ github.workspace }}/pom.xml
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+          CUSTOM_TAG: release/${{ steps.extractVersion.outputs.version }}
       # Uses the `docker/login-action` action to log in to the Container registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -55,7 +59,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ steps.packageVersion.outputs.TAG_NAME }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ steps.extractVersion.outputs.version }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
