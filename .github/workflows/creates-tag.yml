@@ -1,5 +1,4 @@
-# example 1: on push to master
-name: Bump version
+name: Creates tag
 on:
   push:
     branches:

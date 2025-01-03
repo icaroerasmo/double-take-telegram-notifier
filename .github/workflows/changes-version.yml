@@ -1,4 +1,4 @@
-name: Block release tags from non-main branches
+name: Changes version on release branches
 
 on:
   create:
@@ -17,7 +17,9 @@ jobs:
     steps:
       - name: Extract tag name
         id: extractTag
-        run: echo "TAG_NAME=$(basename $GITHUB_REF_NAME)" >> $GITHUB_OUTPUT
+        run: |
+          echo "TAG_NAME=$(basename $GITHUB_REF_NAME)" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=$(basename $GITHUB_REF_NAME)"
       - name: Checkout to main
         uses: actions/checkout@v4
       - name: Bump version
