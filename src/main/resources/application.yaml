@@ -4,6 +4,5 @@ environment-variables:
 
 logging:
   level:
-    root: OFF
     org:
       springframework: OFF
