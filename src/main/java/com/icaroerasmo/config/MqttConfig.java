@@ -35,25 +35,32 @@ public class MqttConfig {
     private final ListenersProperties listenersProperties;
 
     @Bean
-    public IMqttClient mqttClient() throws MqttException {
+    public IMqttClient mqttClient() {
 
         final String clientId = "mqttListener";
         final String connectionString = "%s://%s:%s".
                 formatted(mqttProperties.getProtocol().getProtocolShort(),
                         mqttProperties.getHost(), mqttProperties.getPort());
 
+        try {
 
-        IMqttClient client = new MqttClient(connectionString, clientId);
+            IMqttClient client = new MqttClient(connectionString, clientId);
 
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setUserName(mqttProperties.getUsername());
-        options.setPassword(mqttProperties.getPassword().toCharArray());
-        options.setAutomaticReconnect(mqttProperties.getAutomaticReconnect());
-        options.setCleanSession(mqttProperties.getCleanSession());
-        options.setConnectionTimeout(mqttProperties.getConnectionTimeout());
-        client.connect(options);
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setUserName(mqttProperties.getUsername());
+            options.setPassword(mqttProperties.getPassword().toCharArray());
+            options.setAutomaticReconnect(mqttProperties.getAutomaticReconnect());
+            options.setCleanSession(mqttProperties.getCleanSession());
+            options.setConnectionTimeout(mqttProperties.getConnectionTimeout());
 
-        return client;
+            client.connect(options);
+
+            return client;
+        } catch (MqttException e) {
+            log.error("Error connecting to MQTT broker. Exiting...", e);
+            System.exit(1);
+            throw new RuntimeException(e);
+        }
     }
 
     @Bean
