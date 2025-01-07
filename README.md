@@ -36,7 +36,7 @@ listeners:
 ### Docker run
 
 ```CMD
-docker run icaroerasmo/double-take-telegram-notifier:0.0.1 \
+docker run icaroerasmo/double-take-telegram-notifier:latest \
     -v ./double-take-telegram-notifier:/app/config
 ```
 
